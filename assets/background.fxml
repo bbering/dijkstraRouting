@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.mainController">
+   <children>
+      <ImageView fx:id="backgroundImg" fitHeight="700.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@backgroundImg.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="remetenteImg" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="emissorImg" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+      <Text fx:id="packetCounterText" fill="#030303" fontSmoothingType="LCD" layoutX="266.0" layoutY="649.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="240.33111213235296">
+         <font>
+            <Font name="Impact" size="27.0" />
+         </font>
+      </Text>
+      <ImageView fx:id="createdPacks" fitHeight="124.0" fitWidth="310.0" layoutX="-14.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@pacotesCriados.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="iniciar" fitHeight="137.0" fitWidth="200.0" layoutX="306.0" layoutY="443.0" onMouseClicked="#clicouIniciar" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@botaoIniciar.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="botaoInicio" fitHeight="150.0" fitWidth="193.0" layoutX="-14.0" layoutY="-24.0" onMouseClicked="#clicouInicio" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@INICIO.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="spongeUp" fitHeight="309.0" fitWidth="247.0" layoutY="356.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@spongeBobUp.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="emissorReceptor" fitHeight="163.0" fitWidth="410.0" layoutX="254.0" layoutY="242.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@emissorReceptor.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="titulo" fitHeight="137.0" fitWidth="480.0" layoutX="147.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@titulo.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>
