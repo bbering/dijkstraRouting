@@ -29,6 +29,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -76,6 +77,8 @@ public class mainController implements Initializable {
 
     int iniciouDjikstra = 0; // opcao padrao
 
+    private List<Text> letterTexts = new ArrayList<>(); // Lista para armazenar os textos
+
     // utilizado para garantir a sincronizacao entre as threads
     private AtomicInteger custoCaminho = new AtomicInteger(0);
 
@@ -91,11 +94,8 @@ public class mainController implements Initializable {
 
     // metodo principal utilizado para gerar o grafo na tela
     private void createAndShowGraph(int numberOfNodes) {
-
-        // os metodos abaixo servem para caso os recursos visuais sejam apagados em
-        // algum momento, eles sejam
-        // readicionados no mainPane
-
+        // os métodos abaixo servem para caso os recursos visuais sejam apagados em
+        // algum momento, eles sejam readicionados no mainPane
         Platform.runLater(() -> {
             if (!mainPane.getChildren().contains(botaoInicio)) {
                 mainPane.getChildren().add(botaoInicio);
@@ -118,12 +118,12 @@ public class mainController implements Initializable {
             }
         });
 
-        // limpa nos e arestas, mantendo a imagem do fundo
+        // limpa nós e arestas, mantendo a imagem do fundo
         mainPane.getChildren().removeIf(node -> node instanceof ImageView && node != backgroundImageView);
         nodes.clear();
         edges.clear();
 
-        // caso a imagem do fundo tenha se perdido, ela e readicionada
+        // caso a imagem do fundo tenha se perdido, ela é readicionada
         if (backgroundImageView == null) {
             Image backgroundImage = new Image("file:./assets/backgroundImg.png");
             backgroundImageView = new ImageView(backgroundImage);
@@ -135,7 +135,7 @@ public class mainController implements Initializable {
         double radius = 200; // Raio do hexágono
         double centerX = 450; // Centro do hexágono em X
         double centerY = 330; // Centro do hexágono em Y
-        double nodeSize = 100; // Tamanho dos nós (largura e altura)
+        double nodeSize = 145; // Tamanho dos nós (largura e altura)
 
         for (int i = 1; i <= numberOfNodes; i++) {
             Image nodeImage;
@@ -150,7 +150,7 @@ public class mainController implements Initializable {
             nodeImageView.setFitWidth(nodeSize);
             nodeImageView.setFitHeight(nodeSize);
 
-            // calcula a posição dos nos no circulo
+            // calcula a posição dos nós no círculo
             double angle = 2 * Math.PI * i / numberOfNodes;
             double x = centerX + radius * Math.cos(angle) - nodeSize / 2;
             double y = centerY + radius * Math.sin(angle) - nodeSize / 2;
@@ -158,8 +158,20 @@ public class mainController implements Initializable {
             nodeImageView.setLayoutX(x);
             nodeImageView.setLayoutY(y);
 
-            // adiciona o no e o numero ao mainPane
-            mainPane.getChildren().addAll(nodeImageView);
+            // cria o texto para a letra correspondente ao nó
+            char nodeLetter = (char) ('A' + (i - 1)); // Converte 1 para 'A', 2 para 'B', etc.
+            Text letterText = new Text(String.valueOf(nodeLetter));
+            letterText.setFont(Font.font("Impact", FontWeight.BOLD, 32));
+            letterText.setFill(Color.YELLOW);
+            letterText.setLayoutX(x + nodeSize / 2 - 10); // Centraliza na horizontal
+            letterText.setLayoutY(y + nodeSize / 2 + 10); // Centraliza na vertical
+            letterText.setStroke(Color.BLACK);
+            letterText.setStrokeWidth(2);
+
+            letterTexts.add(letterText); // Armazena na lista
+
+            // adiciona o nó e o texto ao mainPane
+            mainPane.getChildren().addAll(nodeImageView, letterText);
 
             // caso createdPacks foi removido
             if (!mainPane.getChildren().contains(routeImgCost)) {
@@ -168,10 +180,18 @@ public class mainController implements Initializable {
 
             nodes.put(i, nodeImageView);
 
-            // evento de clique necessario para escolher no emissor e receptor
+            // evento de clique necessário para escolher nó emissor e receptor
             nodeImageView.setOnMouseClicked(event -> nodeClicked(nodeImageView));
         }
+    }
 
+    // Método para apagar os textos
+    public void clearLetterTexts() {
+        // Remove todos os textos da lista do mainPane
+        for (Text text : letterTexts) {
+            mainPane.getChildren().remove(text);
+        }
+        letterTexts.clear(); // Limpa a lista após a remoção
     }
 
     // metodo utilizado para criar arestas entre os nos
@@ -238,18 +258,27 @@ public class mainController implements Initializable {
             edge.setStartY(node1View.getLayoutY() + node1View.getFitHeight() / 2);
             edge.setEndX(node2View.getLayoutX() + node2View.getFitWidth() / 2);
             edge.setEndY(node2View.getLayoutY() + node2View.getFitHeight() / 2);
-            edge.setStroke(Color.BLACK);
-            edge.setStrokeWidth(2);
+            edge.setStroke(Color.WHITE);
+            edge.setStrokeWidth(3);
 
             double midX = (edge.getStartX() + edge.getEndX()) / 2;
             double midY = (edge.getStartY() + edge.getEndY()) / 2;
 
             Label weightLabel = new Label(String.valueOf(weight));
             weightLabel.setStyle(
-                    "-fx-background-color: white; -fx-border-color: black; -fx-padding: 2px; -fx-font-size: 14px;");
+                    "-fx-font-family: Impact; -fx-font-size: 24px; -fx-text-fill: yellow;"); // Cor do texto
             weightLabel.setPrefWidth(30);
             weightLabel.setAlignment(Pos.CENTER);
             weightLabel.setVisible(false);
+
+            // Adicionando o contorno preto
+            DropShadow dropShadow = new DropShadow();
+            dropShadow.setColor(Color.BLACK);
+            dropShadow.setRadius(0);
+            dropShadow.setSpread(1);
+            dropShadow.setWidth(4.5);
+            dropShadow.setHeight(4.5);
+            weightLabel.setEffect(dropShadow);
 
             Platform.runLater(() -> {
                 if (!mainPane.getChildren().contains(weightLabel)) {
@@ -360,7 +389,6 @@ public class mainController implements Initializable {
     void clicouIniciar(MouseEvent event) {
         titulo.setVisible(false);
         setIniciouDjikstra(1);
-        buttonOff();
         loadGraphFromFile();
         routeCost.setVisible(true);
         routeImgCost.setVisible(true);
@@ -427,6 +455,7 @@ public class mainController implements Initializable {
         // limpando o custo total do caminho
         custoCaminho.set(0);
         routeCost.setText("0");
+        clearLetterTexts();
 
         // reconfigurando visibilidade
         iniciar.setVisible(true);
@@ -447,9 +476,6 @@ public class mainController implements Initializable {
 
         // garante que a tela estara limpa
         mainPane.requestLayout();
-    }
-
-    public void buttonOff() {
     }
 
     // algoritmo de dijkstra
@@ -520,7 +546,7 @@ public class mainController implements Initializable {
                         routeCost.setText(String.valueOf(costToDisplay));
                         Line edge = edges.get(edgeKey);
                         if (edge != null) {
-                            edge.setStroke(Color.RED);
+                            edge.setStroke(Color.ORANGERED);
                             edge.setStrokeWidth(3);
                         }
                     });
@@ -542,7 +568,7 @@ public class mainController implements Initializable {
             String edgeKey = path.get(i) + "-" + path.get(i + 1);
             Line edge = edges.get(edgeKey);
             if (edge != null) {
-                edge.setStroke(Color.RED); // muda a cor da aresta para vermelho
+                edge.setStroke(Color.ORANGERED); // muda a cor da aresta para vermelho
                 edge.setStrokeWidth(3); // aumenta a largura da aresta
             }
         }

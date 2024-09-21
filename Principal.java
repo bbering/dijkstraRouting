@@ -29,7 +29,7 @@ public class Principal extends Application {
 
     // setando controlador e iniciando musica
     mainController controller = loader.getController();
-    controller.playMusic();
+    //controller.playMusic();
 
     // configurando cena e proporcoes
     Scene scene = new Scene(root);
