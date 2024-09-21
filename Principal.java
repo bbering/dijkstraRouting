@@ -1,8 +1,9 @@
+
 /* ***************************************************************
 * Autor............: Breno Bering Silva
 * Matricula........: 202110863
 * Inicio...........: 19/09/2024
-* Ultima alteracao.: 22/09/2024
+* Ultima alteracao.: 21/09/2024
 * Nome.............: Principal
 * Funcao...........: .java que inicia a cena principal
 ****************************************************************/
@@ -29,7 +30,7 @@ public class Principal extends Application {
 
     // setando controlador e iniciando musica
     mainController controller = loader.getController();
-    //controller.playMusic();
+    controller.playMusic();
 
     // configurando cena e proporcoes
     Scene scene = new Scene(root);

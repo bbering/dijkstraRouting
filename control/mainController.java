@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.sound.sampled.AudioInputStream;
@@ -44,6 +43,8 @@ public class mainController implements Initializable {
 
     @FXML
     private AnchorPane mainPane; // anchorpane principal do codigo
+
+    // recursos visuais
 
     @FXML
     private ImageView iniciar;
@@ -77,13 +78,10 @@ public class mainController implements Initializable {
 
     int iniciouDjikstra = 0; // opcao padrao
 
-    private List<Text> letterTexts = new ArrayList<>(); // Lista para armazenar os textos
+    private List<Text> letterTexts = new ArrayList<>(); // lista onde as letras dos roteadores sao armazenados
 
-    // utilizado para garantir a sincronizacao entre as threads
-    private AtomicInteger custoCaminho = new AtomicInteger(0);
-
-    private Map<Integer, ImageView> nodes = new HashMap<>();
-    private Map<String, Line> edges = new HashMap<>();
+    private Map<Integer, ImageView> nodes = new HashMap<>(); // lista contendo nos
+    private Map<String, Line> edges = new HashMap<>(); // lista contendo arestas
     private ImageView backgroundImageView; // referencia do backgroundImg
 
     private ImageView emissorNode = null; // no emissor
@@ -132,10 +130,10 @@ public class mainController implements Initializable {
             mainPane.getChildren().add(backgroundImageView);
         }
 
-        double radius = 200; // Raio do hexágono
-        double centerX = 450; // Centro do hexágono em X
-        double centerY = 330; // Centro do hexágono em Y
-        double nodeSize = 145; // Tamanho dos nós (largura e altura)
+        double radius = 200; // disposicao pensando em um hexagono
+        double centerX = 450; // centro do hexagono em x
+        double centerY = 330; // centro do hexagono em y
+        double nodeSize = 145; // proporcao dos nos
 
         for (int i = 1; i <= numberOfNodes; i++) {
             Image nodeImage;
@@ -150,7 +148,7 @@ public class mainController implements Initializable {
             nodeImageView.setFitWidth(nodeSize);
             nodeImageView.setFitHeight(nodeSize);
 
-            // calcula a posição dos nós no círculo
+            // calcula a posicao dos nos no circulo
             double angle = 2 * Math.PI * i / numberOfNodes;
             double x = centerX + radius * Math.cos(angle) - nodeSize / 2;
             double y = centerY + radius * Math.sin(angle) - nodeSize / 2;
@@ -158,40 +156,41 @@ public class mainController implements Initializable {
             nodeImageView.setLayoutX(x);
             nodeImageView.setLayoutY(y);
 
-            // cria o texto para a letra correspondente ao nó
-            char nodeLetter = (char) ('A' + (i - 1)); // Converte 1 para 'A', 2 para 'B', etc.
+            // cria a letra correspondente a posicao do no na sub-rede
+            char nodeLetter = (char) ('A' + (i - 1)); // converte 1 pra A, 2 pra B etc
             Text letterText = new Text(String.valueOf(nodeLetter));
             letterText.setFont(Font.font("Impact", FontWeight.BOLD, 32));
             letterText.setFill(Color.YELLOW);
-            letterText.setLayoutX(x + nodeSize / 2 - 10); // Centraliza na horizontal
-            letterText.setLayoutY(y + nodeSize / 2 + 10); // Centraliza na vertical
+            letterText.setLayoutX(x + nodeSize / 2 - 10); // centraliza a letra horizontal
+            letterText.setLayoutY(y + nodeSize / 2 + 10); // centraliza a letra vertical
             letterText.setStroke(Color.BLACK);
             letterText.setStrokeWidth(2);
 
-            letterTexts.add(letterText); // Armazena na lista
+            letterTexts.add(letterText); // armazena na lista de letras
 
-            // adiciona o nó e o texto ao mainPane
+            // adicionando a imageView do no e a letra no mainPane
             mainPane.getChildren().addAll(nodeImageView, letterText);
 
-            // caso createdPacks foi removido
+            // caso a imagem do custo total seja removida
             if (!mainPane.getChildren().contains(routeImgCost)) {
                 mainPane.getChildren().add(routeImgCost);
             }
 
             nodes.put(i, nodeImageView);
 
-            // evento de clique necessário para escolher nó emissor e receptor
+            // evento que captura o clique do mouse para quando o usuario escolher emissor e
+            // remetente
             nodeImageView.setOnMouseClicked(event -> nodeClicked(nodeImageView));
         }
     }
 
-    // Método para apagar os textos
+    // metodo para limpar as letras
     public void clearLetterTexts() {
-        // Remove todos os textos da lista do mainPane
+        // remove todas as letras do mainPane
         for (Text text : letterTexts) {
             mainPane.getChildren().remove(text);
         }
-        letterTexts.clear(); // Limpa a lista após a remoção
+        letterTexts.clear(); // limpa a lista
     }
 
     // metodo utilizado para criar arestas entre os nos
@@ -203,10 +202,10 @@ public class mainController implements Initializable {
         }
     }
 
+    // metodo usado para mostrar o peso das arestas
     private void showEdgeWeights(int emissorId, int receptorId) {
         for (String key : edgeWeightLabels.keySet()) {
             Label weightLabel = edgeWeightLabels.get(key);
-            System.out.println("Checando chave: " + key); // Adicione este log
             weightLabel.setVisible(true);
         }
     }
@@ -220,7 +219,7 @@ public class mainController implements Initializable {
                 if (!line.isEmpty()) {
                     int numberOfNodes = Integer.parseInt(line.split(";")[0].trim());
 
-                    // Limpa e prepara os nós e arestas antes de criar um novo gráfico
+                    // limpa e prepara os nós e arestas antes de criar um novo gráfico
                     createAndShowGraph(numberOfNodes);
 
                     while ((line = br.readLine()) != null) {
@@ -236,7 +235,7 @@ public class mainController implements Initializable {
                         }
                     }
 
-                    // Mostrar as arestas após a criação dos nós
+                    // mostra as arestas apos criacao dos nos
                     createEdges();
                 }
             }
@@ -266,12 +265,12 @@ public class mainController implements Initializable {
 
             Label weightLabel = new Label(String.valueOf(weight));
             weightLabel.setStyle(
-                    "-fx-font-family: Impact; -fx-font-size: 24px; -fx-text-fill: yellow;"); // Cor do texto
+                    "-fx-font-family: Impact; -fx-font-size: 24px; -fx-text-fill: yellow;"); // cor do texto
             weightLabel.setPrefWidth(30);
             weightLabel.setAlignment(Pos.CENTER);
             weightLabel.setVisible(false);
 
-            // Adicionando o contorno preto
+            // sombreamento na cor preta dos pesos
             DropShadow dropShadow = new DropShadow();
             dropShadow.setColor(Color.BLACK);
             dropShadow.setRadius(0);
@@ -286,24 +285,12 @@ public class mainController implements Initializable {
                 }
             });
 
-            double deltaX = edge.getEndX() - edge.getStartX();
-            double deltaY = edge.getEndY() - edge.getStartY();
-            double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
+            // orientacao da weightLabel
+            weightLabel.setRotate(360);
 
-            if (angle > 90 || angle < -90) {
-                angle += 180;
-            }
-
-            weightLabel.setRotate(angle);
+            // centralizando o label no meio da aresta
             weightLabel.setLayoutX(midX - weightLabel.getPrefWidth() / 2);
             weightLabel.setLayoutY(midY - weightLabel.getHeight() / 2);
-
-            double labelOffset = 10;
-            double offsetX = labelOffset * Math.sin(Math.toRadians(angle));
-            double offsetY = labelOffset * -Math.cos(Math.toRadians(angle));
-
-            weightLabel.setLayoutX(weightLabel.getLayoutX() + offsetX);
-            weightLabel.setLayoutY(weightLabel.getLayoutY() + offsetY);
 
             edges.put(node1 + "-" + node2, edge);
             edges.put(node2 + "-" + node1, edge);
@@ -323,6 +310,7 @@ public class mainController implements Initializable {
 
     // metodo que esconde as labels de peso ate o usuario escolher novos nos emissor
     // e receptor
+
     private void hideEdgeWeights() {
         for (Map.Entry<String, Label> entry : edgeWeightLabels.entrySet()) {
             Label weightLabel = entry.getValue();
@@ -332,6 +320,7 @@ public class mainController implements Initializable {
 
     // metodo que implementa a logica do usuario clicar em um no para escolhe-lo
     // como emissor ou remetente
+
     private void nodeClicked(ImageView nodeImageView) {
         if (emissorNode == null) {
             emissorNode = nodeImageView;
@@ -355,12 +344,14 @@ public class mainController implements Initializable {
     }
 
     public int getIniciouDjikstra() {
-        return iniciouDjikstra;
+        return iniciouDjikstra; // getter metodo usado para testes
     }
 
     public void setIniciouDjikstra(int iniciouDjikstra) {
         this.iniciouDjikstra = iniciouDjikstra;
     }
+
+    // metodo que retorna o id do no dentro da lista
 
     private Integer getNodeId(ImageView node) {
         return nodes.entrySet()
@@ -376,11 +367,11 @@ public class mainController implements Initializable {
     }
 
     public AnchorPane getMainPane() {
-        return mainPane;
+        return mainPane; // retorna a pane principal
     }
 
     public ImageView getRemetenteNode() {
-        return remetenteNode;
+        return remetenteNode; // retorna a imgView do remetente
     }
 
     // metodos que implementam a logica dos botoes
@@ -452,8 +443,6 @@ public class mainController implements Initializable {
             mainPane.getChildren().add(emissorReceptor);
         }
 
-        // limpando o custo total do caminho
-        custoCaminho.set(0);
         routeCost.setText("0");
         clearLetterTexts();
 
@@ -485,14 +474,15 @@ public class mainController implements Initializable {
                 Thread.sleep(1500);
             } catch (InterruptedException e) {
             }
-            // Mapa para armazenar a distância mínima de cada nó ao nó inicial
+            // mapa que armazena distancias entre nos
             Map<Integer, Integer> distances = new HashMap<>();
-            // Mapa para armazenar o nó anterior no caminho mais curto
+            // mapa que armazena os nos anteriores ao longo do algoritmo
             Map<Integer, Integer> previousNodes = new HashMap<>();
-            // Conjunto de nós não visitados
+            // nos nao visitados (quando a lista esta vazia e nao ha mais nos nao visitados,
+            // encerra o algoritmo)
             Set<Integer> unvisitedNodes = new HashSet<>(nodes.keySet());
 
-            // Inicializa as distâncias
+            // inicializando distancias
             for (Integer node : nodes.keySet()) {
                 distances.put(node, Integer.MAX_VALUE);
                 previousNodes.put(node, null);
@@ -532,15 +522,15 @@ public class mainController implements Initializable {
             }
             Collections.reverse(path);
 
-            // Atualiza o custo total e exibe na tela
-            int totalCost = 0; // Inicializa o totalCost
+            // atualizando o custo total para exibi-lo na tela
+            int totalCost = 0;
             for (int i = 0; i < path.size() - 1; i++) {
                 String edgeKey = path.get(i) + "-" + path.get(i + 1);
                 if (edgeWeights.containsKey(edgeKey)) {
                     int edgeWeight = edgeWeights.get(edgeKey);
-                    totalCost += edgeWeight; // Incrementa o custo total
+                    totalCost += edgeWeight; // incrementa o custo total
 
-                    // Atualiza a interface gráfica e muda a cor da aresta
+                    // atualiza a interface e muda cor da aresta do caminho mais curto
                     final int costToDisplay = totalCost;
                     Platform.runLater(() -> {
                         routeCost.setText(String.valueOf(costToDisplay));
@@ -551,7 +541,8 @@ public class mainController implements Initializable {
                         }
                     });
 
-                    // Aguarda 2 segundos antes de prosseguir para a próxima aresta
+                    // aguarda 2 segundos para melhor visualizacao da animacao
+
                     try {
                         Thread.sleep(1500);
                     } catch (InterruptedException e) {
@@ -562,7 +553,8 @@ public class mainController implements Initializable {
         }).start();
     }
 
-    // Método para destacar o caminho mais curto
+    // metodo que destaca o caminho mais curto
+
     private void highlightShortestPath(List<Integer> path) {
         for (int i = 0; i < path.size() - 1; i++) {
             String edgeKey = path.get(i) + "-" + path.get(i + 1);
@@ -574,7 +566,8 @@ public class mainController implements Initializable {
         }
     }
 
-    // Método auxiliar para obter os nós adjacentes
+    // metodo para obter os nos adjascentes auxiliar do algoritmo de dijkstra
+
     private List<Integer> getAdjacentNodes(int node) {
         return edges.keySet().stream()
                 .filter(key -> key.startsWith(node + "-") || key.endsWith("-" + node))
@@ -589,9 +582,9 @@ public class mainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         routeCost.setFont(Font.font("Impact", FontWeight.BOLD, 25));
-        routeCost.setFill(Color.YELLOW); // Define a cor do texto para amarelo
-        routeCost.setStroke(Color.BLACK); // Define a cor do contorno para preto
-        routeCost.setStrokeWidth(2); // Define a largura do contorno
+        routeCost.setFill(Color.YELLOW);
+        routeCost.setStroke(Color.BLACK);
+        routeCost.setStrokeWidth(2);
         emissorImg.setVisible(false);
         remetenteImg.setVisible(false);
         emissorReceptor.setVisible(false);
@@ -620,15 +613,14 @@ public class mainController implements Initializable {
             botaoInicio.setEffect(null);
         });
 
-        // Adiciona createdPacks se não estiver presente
+        // adiciona a imageview de custo caso tenha sido removida
         if (!mainPane.getChildren().contains(routeImgCost)) {
             mainPane.getChildren().add(routeImgCost);
         }
 
-        // Inicializa emissor e remetente com imagens padrão
+        // inicializa emissor e remetente com img padrao
         emissorImg.setImage(new Image("file:./assets/emissor.png"));
         remetenteImg.setImage(new Image("file:./assets/remetente.png"));
-
     }
 
     // metodo utilizado para tocar musica
