@@ -1,8 +1,8 @@
 /* ***************************************************************
 * Autor............: Breno Bering Silva
 * Matricula........: 202110863
-* Inicio...........: 02/09/2024
-* Ultima alteracao.: 08/09/2024
+* Inicio...........: 19/09/2024
+* Ultima alteracao.: 22/09/2024
 * Nome.............: Principal
 * Funcao...........: .java que inicia a cena principal
 ****************************************************************/
@@ -37,7 +37,7 @@ public class Principal extends Application {
     primaryStage.setWidth(900);
     primaryStage.setHeight(700);
     primaryStage.setResizable(false);
-    primaryStage.setTitle("Roteamento por inundação");
+    primaryStage.setTitle("Roteamento Dijkstra");
     primaryStage.show();
   }
 }

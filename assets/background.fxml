@@ -15,17 +15,17 @@
       </ImageView>
       <ImageView fx:id="remetenteImg" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="emissorImg" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-      <Text fx:id="packetCounterText" fill="#030303" fontSmoothingType="LCD" layoutX="266.0" layoutY="649.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="240.33111213235296">
+      <Text fx:id="routeCost" fill="#030303" fontSmoothingType="LCD" layoutX="266.0" layoutY="649.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="240.33111213235296">
          <font>
             <Font name="Impact" size="27.0" />
          </font>
       </Text>
-      <ImageView fx:id="createdPacks" fitHeight="124.0" fitWidth="310.0" layoutX="-14.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="routeImgCost" fitHeight="124.0" fitWidth="310.0" layoutX="-14.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@pacotesCriados.png" />
+            <Image url="@custoTotal.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="iniciar" fitHeight="137.0" fitWidth="200.0" layoutX="306.0" layoutY="443.0" onMouseClicked="#clicouIniciar" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="iniciar" fitHeight="137.0" fitWidth="371.0" layoutX="347.0" layoutY="334.0" onMouseClicked="#clicouIniciar" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@botaoIniciar.png" />
          </image>
@@ -45,7 +45,7 @@
             <Image url="@emissorReceptor.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="titulo" fitHeight="137.0" fitWidth="480.0" layoutX="147.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="titulo" fitHeight="137.0" fitWidth="480.0" layoutX="210.0" layoutY="242.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@titulo.png" />
          </image>
