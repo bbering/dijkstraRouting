@@ -12,7 +12,7 @@ O projeto consiste em utilizar o algoritmo de Dijkstra, que encontra o caminho m
 
 ```
 Clonar repositorio
-git clone git@github.com:bbering/dijkstraRouting.git
+git clone https://github.com/bbering/dijkstraRouting.git
 
 Executar na pasta raiz do programa (onde se encontra o .java principal) o seguinte comando:
 
