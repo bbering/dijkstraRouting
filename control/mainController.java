@@ -92,54 +92,58 @@ public class mainController implements Initializable {
 
     // metodo principal utilizado para gerar o grafo na tela
     private void createAndShowGraph(int numberOfNodes) {
-        // os métodos abaixo servem para caso os recursos visuais sejam apagados em
-        // algum momento, eles sejam readicionados no mainPane
+        // Adiciona o botão Iniciar ao mainPane se ainda não estiver presente
         Platform.runLater(() -> {
             if (!mainPane.getChildren().contains(botaoInicio)) {
                 mainPane.getChildren().add(botaoInicio);
             }
         });
 
+        // Adiciona a rota de custo ao mainPane se ainda não estiver presente
         Platform.runLater(() -> {
             if (!mainPane.getChildren().contains(routeCost)) {
                 mainPane.getChildren().add(routeCost);
             }
         });
 
+        // Limpa os nós, mas não remove elementos essenciais
         mainPane.getChildren()
-                .removeIf(node -> (node instanceof ImageView && node != backgroundImageView && node != routeImgCost)
-                        || node == routeCost);
+                .removeIf(node -> (node instanceof ImageView && node != backgroundImageView && node != routeImgCost) ||
+                        node == routeCost);
 
+        // Adiciona o emissor receptor ao mainPane se ainda não estiver presente
         Platform.runLater(() -> {
             if (!mainPane.getChildren().contains(emissorReceptor)) {
                 mainPane.getChildren().add(emissorReceptor);
             }
         });
 
-        // limpa nós e arestas, mantendo a imagem do fundo
-        mainPane.getChildren().removeIf(node -> node instanceof ImageView && node != backgroundImageView);
+        // Limpa os mapas de nós e arestas
         nodes.clear();
         edges.clear();
 
-        // caso a imagem do fundo tenha se perdido, ela é readicionada
-        if (backgroundImageView == null) {
-            Image backgroundImage = new Image("file:./assets/backgroundImg.png");
-            backgroundImageView = new ImageView(backgroundImage);
-            backgroundImageView.setFitWidth(mainPane.getWidth());
-            backgroundImageView.setFitHeight(mainPane.getHeight());
+        // Adiciona o backgroundImageView se ainda não estiver presente
+        if (!mainPane.getChildren().contains(backgroundImageView)) {
+            if (backgroundImageView == null) {
+                Image backgroundImage = new Image("file:./assets/backgroundImg.png");
+                backgroundImageView = new ImageView(backgroundImage);
+                backgroundImageView.setFitWidth(mainPane.getWidth());
+                backgroundImageView.setFitHeight(mainPane.getHeight());
+            }
             mainPane.getChildren().add(backgroundImageView);
         }
 
-        double radius = 200; // disposicao pensando em um hexagono
-        double centerX = 450; // centro do hexagono em x
-        double centerY = 330; // centro do hexagono em y
-        double nodeSize = 145; // proporcao dos nos
+        double radius = 200;
+        double centerX = 450;
+        double centerY = 330;
+        double nodeSize = 145;
 
         for (int i = 1; i <= numberOfNodes; i++) {
             Image nodeImage;
             try {
-                nodeImage = new Image("file:./assets/nó.png");
+                nodeImage = new Image(getClass().getResourceAsStream("/assets/no.png"));
             } catch (Exception e) {
+                System.err.println("Erro ao carregar a imagem do nó: " + e.getMessage());
                 continue;
             }
 
@@ -148,7 +152,6 @@ public class mainController implements Initializable {
             nodeImageView.setFitWidth(nodeSize);
             nodeImageView.setFitHeight(nodeSize);
 
-            // calcula a posicao dos nos no circulo
             double angle = 2 * Math.PI * i / numberOfNodes;
             double x = centerX + radius * Math.cos(angle) - nodeSize / 2;
             double y = centerY + radius * Math.sin(angle) - nodeSize / 2;
@@ -156,31 +159,28 @@ public class mainController implements Initializable {
             nodeImageView.setLayoutX(x);
             nodeImageView.setLayoutY(y);
 
-            // cria a letra correspondente a posicao do no na sub-rede
-            char nodeLetter = (char) ('A' + (i - 1)); // converte 1 pra A, 2 pra B etc
+            char nodeLetter = (char) ('A' + (i - 1));
             Text letterText = new Text(String.valueOf(nodeLetter));
             letterText.setFont(Font.font("Impact", FontWeight.BOLD, 32));
             letterText.setFill(Color.YELLOW);
-            letterText.setLayoutX(x + nodeSize / 2 - 10); // centraliza a letra horizontal
-            letterText.setLayoutY(y + nodeSize / 2 + 10); // centraliza a letra vertical
+            letterText.setLayoutX(x + nodeSize / 2 - 10);
+            letterText.setLayoutY(y + nodeSize / 2 + 10);
             letterText.setStroke(Color.BLACK);
             letterText.setStrokeWidth(2);
 
-            letterTexts.add(letterText); // armazena na lista de letras
+            letterTexts.add(letterText);
 
-            // adicionando a imageView do no e a letra no mainPane
+            // Adiciona os nós e letras ao mainPane
             mainPane.getChildren().addAll(nodeImageView, letterText);
-
-            // caso a imagem do custo total seja removida
-            if (!mainPane.getChildren().contains(routeImgCost)) {
-                mainPane.getChildren().add(routeImgCost);
-            }
-
             nodes.put(i, nodeImageView);
 
-            // evento que captura o clique do mouse para quando o usuario escolher emissor e
-            // remetente
+            // Configura o evento de clique
             nodeImageView.setOnMouseClicked(event -> nodeClicked(nodeImageView));
+        }
+
+        // Verifica se routeImgCost está presente
+        if (!mainPane.getChildren().contains(routeImgCost)) {
+            mainPane.getChildren().add(routeImgCost);
         }
     }
 
@@ -408,11 +408,11 @@ public class mainController implements Initializable {
 
         // retorna os nos selecionados para roteadores padroes
         if (emissorNode != null) {
-            emissorNode.setImage(new Image("file:./assets/nó.png"));
+            emissorNode.setImage(new Image(getClass().getResourceAsStream("/assets/no.png")));
             emissorNode = null;
         }
         if (remetenteNode != null) {
-            remetenteNode.setImage(new Image("file:./assets/nó.png"));
+            remetenteNode.setImage(new Image(getClass().getResourceAsStream("/assets/no.png")));
             remetenteNode = null;
         }
 
